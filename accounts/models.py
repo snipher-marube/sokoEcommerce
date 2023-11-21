@@ -42,7 +42,7 @@ class Account(AbstractBaseUser):
     last_name = models.CharField(max_length=255)
     username = models.CharField(max_length=255, unique=True) # unique=True means that no two users can have the same username
     email = models.EmailField(unique=True) # unique=True means that no two users can have the same email address
-    phone_number = models.CharField(max_length=15, unique=True)
+    phone_number = models.CharField(max_length=15)
     
     #required fields
     date_joined = models.DateTimeField(auto_now_add=True)
