@@ -19,7 +19,7 @@ def registerUser(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
             email = form.cleaned_data['email']
             phone_number = form.cleaned_data['phone_number']
             password = form.cleaned_data['password']
@@ -42,8 +42,8 @@ def registerUser(request):
             send_email = EmailMessage(mail_subject, message, to=[to_email])
             send_email.send()
 
-            messages.success(request, 'Account created successfully. Check your email to activate your account')
-            return redirect('register')
+            #messages.success(request, 'Thank you for registering with us. We have sent you a verification email to your email address. Please verify it.')
+            return redirect('/accounts/login/?command=verification&email='+email)
 
     else:
         form = RegistrationForm()
@@ -76,9 +76,26 @@ def loginUser(request):
     return render(request, 'accounts/login.html')
 
 
-
 @login_required(login_url='login')
 def logoutUser(request):
     logout(request)
     messages.success(request, 'Logged out successfully')
     return redirect('login')
+
+
+def activate(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = Account._default_manager.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, Account.DoesNotExist):
+        user = None
+    
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        messages.success(request, 'Account activated successfully')
+        return redirect('login')
+    else:
+        messages.error(request, 'Activation link is invalid')
+        return redirect('register')
+   
