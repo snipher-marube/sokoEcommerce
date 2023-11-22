@@ -100,11 +100,19 @@
         <div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
           <div class="d-flex justify-content-end mb-3 mb-lg-0">
             <div class="widget-header">
-              <small class="title text-muted">Welcome guest!</small>
+              
               <div>
+                {% if request.user.is_authenticated %}
+                <small class="title text-muted">Welcome {{user.first_name}} {{user.last_name}} </small>
+                <a href="#">Dashboard</a>
+                <span class="dark-transp"> | </span>
+                <a class="text-danger" type="button" href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                <small class="title text-muted">Welcome Guest</small>
                 <a href="{% url 'login' %}">Sign in</a>
                 <span class="dark-transp"> | </span>
                 <a href="{% url 'register' %}"> Register</a>
+                {% endif %}
               </div>
             </div>
             <a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
