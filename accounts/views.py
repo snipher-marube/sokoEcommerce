@@ -13,8 +13,6 @@ from .forms import RegistrationForm
 from .models import Account
 
 def registerUser(request):
-    
-
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
@@ -64,7 +62,7 @@ def loginUser(request):
                 
                 login(request, user)
                 messages.success(request, 'Login successful')
-                return redirect('home')
+                return redirect('dashboard')
             else:
                 messages.error(request, 'Invalid login credentials')
                 return redirect('login')
@@ -98,4 +96,7 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, 'Activation link is invalid')
         return redirect('register')
-   
+    
+@login_required(login_url='login')
+def dashboard(request):
+    return render(request, 'accounts/dashboard.html')
