@@ -11,7 +11,8 @@
           <div class="card">
             <div class="card-body">
                 <h4 class="card-title mb-4">Billing address</h4>
-                <form action="">
+                <form action="" method="POST">
+                  {% csrf_token %}
                     <div class="form-row">
                         <div class="col form-group">
                             <label for="">First Name</label>
@@ -61,7 +62,7 @@
                         <label for="">Order Note</label>
                         <textarea name="order_note" class="form-control" placeholder="Enter Order Note"></textarea>
                     </div>
-                </form>
+                
             </div>
           </div>
           <!-- card.// -->
@@ -131,10 +132,12 @@
               <p class="text-center mb-3">
                 <img src="{% static 'images/misc/payments.png' %}" height="26" />
               </p>
-              <a href="{% url 'checkout' %}" class="btn btn-primary btn-block"> Place order </a>
+              
+              <button type="submit" name="submit" class="btn btn-primary btn-block">Place Order</button>
               <a href="{% url 'store' %}" class="btn btn-light btn-block"
                 >Continue Shopping</a
               >
+              </form>
             </div>
             <!-- card-body.// -->
           </div>
