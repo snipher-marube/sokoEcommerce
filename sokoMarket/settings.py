@@ -73,10 +73,21 @@ WSGI_APPLICATION = 'sokoMarket.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
+'''DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'snipherdb',
+        'USER': 'snipher',
+        'PASSWORD': 'snipher8431',
+        'HOST': 'localhost',  # Use 'localhost' for local development
+        'PORT': '5432',       # PostgreSQL default port
     }
 }
 
