@@ -8,6 +8,7 @@ from django.utils.http import  urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
+import requests
 
 from .forms import RegistrationForm
 from .models import Account
@@ -101,7 +102,18 @@ def loginUser(request):
 
                 login(request, user)
                 messages.success(request, 'Login successful')
-                return redirect('dashboard')
+                url = request.META.get('HTTP_REFERER')
+                try:
+                    query = requests.utils.urlparse(url).query
+                    # next=/cart/checkout/
+                    params = dict(x.split('=') for x in query.split('&'))
+                    if 'next' in params:
+                        nextPage = params['next']
+                        return redirect(nextPage)
+
+                except:
+                    return redirect('dashboard')
+                
             else:
                 messages.error(request, 'Invalid login credentials')
                 return redirect('login')
