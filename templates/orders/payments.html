@@ -8,11 +8,8 @@
     <!-- ============================ COMPONENT 1 ================================= -->
 
     <div class="row">
-        
       <aside class="col-lg-8">
-        <h4 class="text-center mb-10">
-            Review your order and make payment
-        </h4>
+        <h4 class="text-center mb-10">Review your order and make payment</h4>
         <div class="card">
           <div class="card">
             <h5 class="card-header">Billing Address</h5>
@@ -24,9 +21,8 @@
                 Address: {{order.full_address}} <br />
                 City: {{order.city}} {{order.state}} <br />
                 County: {{order.county}} <br />
-                {% if order.order_note %} 
-                    <b>Order Note:</b> {{order.order_note}} 
-                {% endif %}
+                {% if order.order_note %}
+                <b>Order Note:</b> {{order.order_note}} {% endif %}
               </p>
             </div>
           </div>
@@ -35,10 +31,7 @@
           <div class="card">
             <h5 class="card-header">Payment Method</h5>
             <div class="card-body">
-              <p class="card-text">
-                Paypal
-               
-              </p>
+              <p class="card-text">Paypal</p>
             </div>
           </div>
         </div>
@@ -46,64 +39,63 @@
           <div class="card">
             <h5 class="card-header">Review Products</h5>
             <div class="card-body">
-                <table class="table table-borderless table-shopping-cart">
-                    <thead class="text-muted">
-                      <tr class="small text-uppercase">
-                        <th scope="col">Product</th>
-                        <th scope="col" width="120">Quantity</th>
-                        <th scope="col" width="120">Price</th>
-                        
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for cart_item in cart_items %}
-                      <tr>
-                        <td>
-                          <figure class="itemside align-items-center">
-                            <div class="aside">
-                              <img
-                                src="{{cart_item.product.image.url}}"
-                                class="img-sm"
-                              />
-                            </div>
-                            <figcaption class="info">
-                              <a
-                                href="{{ cart_item.product.get_url }}"
-                                class="title text-dark"
-                              >
-                                {{cart_item.product.product_name}}
-                              </a>
-                              <p class="text-muted small">
-                                {% if cart_item.variations.all %} 
-                                {% for item in cart_item.variations.all %} 
-                                {{ item.variation_category | capfirst }} : {{ item.variation_value | capfirst }}
-                                <br />
-                                {% endfor %} 
-                                {% endif %}
-                              </p>
-                            </figcaption>
-                          </figure>
-                        </td>
-                        <td>
-                          <!-- col.// -->
-                          <label for=""> {{cart_item.quantity}} </label>
-                          <!-- col.// -->
-                        </td>
-                        <td>
-                          <div class="price-wrap">
-                            <var class="price">${{cart_item.sub_total}}</var>
-                            <small class="text-muted">
-                              ${{cart_item.product.price}} each
-                            </small>
-                          </div>
-                          <!-- price-wrap .// -->
-                        </td>
-                        
-                      </tr>
-        
-                      {% endfor %}
-                    </tbody>
-                  </table>
+              <table class="table table-borderless table-shopping-cart">
+                <thead class="text-muted">
+                  <tr class="small text-uppercase">
+                    <th scope="col">Product</th>
+                    <th scope="col" width="120">Quantity</th>
+                    <th scope="col" width="120">Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for cart_item in cart_items %}
+                  <tr>
+                    <td>
+                      <figure class="itemside align-items-center">
+                        <div class="aside">
+                          <img
+                            src="{{cart_item.product.image.url}}"
+                            class="img-sm"
+                          />
+                        </div>
+                        <figcaption class="info">
+                          <a
+                            href="{{ cart_item.product.get_url }}"
+                            class="title text-dark"
+                          >
+                            {{cart_item.product.product_name}}
+                          </a>
+                          <p class="text-muted small">
+                            {% if cart_item.variations.all %} 
+                            {% for item in cart_item.variations.all %} {{
+                            item.variation_category | capfirst }} : {{
+                            item.variation_value | capfirst }}
+                            <br />
+                            {% endfor %} 
+                            {% endif %}
+                          </p>
+                        </figcaption>
+                      </figure>
+                    </td>
+                    <td>
+                      <!-- col.// -->
+                      <label for=""> {{cart_item.quantity}} </label>
+                      <!-- col.// -->
+                    </td>
+                    <td>
+                      <div class="price-wrap">
+                        <var class="price">${{cart_item.sub_total}}</var>
+                        <small class="text-muted">
+                          ${{cart_item.product.price}} each
+                        </small>
+                      </div>
+                      <!-- price-wrap .// -->
+                    </td>
+                  </tr>
+
+                  {% endfor %}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -131,9 +123,10 @@
             <p class="text-center mb-3">
               <img src="{% static 'images/misc/payments.png' %}" height="26" />
             </p>
-            <a href="{% url 'checkout' %}" class="btn btn-primary btn-block">
-              Make Payment
-            </a>
+            <!-- Set up a container element for the paypal button -->
+            <div id="paypal-button-container">
+                <!--PayPal button will load-->
+            </div>
           </div>
           <!-- card-body.// -->
         </div>
@@ -148,4 +141,39 @@
   <!-- container .//  -->
 </section>
 <!-- ========================= SECTION CONTENT END// ========================= -->
+
+
+<script>
+    var total = '{{grand_total}}';
+
+    // Render the PayPal button into #paypal-button-container
+    paypal.Buttons({
+        style: {
+            layout: 'horizontal',
+            color: 'gold',
+            shape: 'rect',
+            label: 'paypal',
+            tagline: 'false',
+            height: 40
+        },
+        // Set up the transaction
+        createOrder: function(data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: total
+                    }
+                }]
+            });
+        },
+        // Finalize the transaction
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                // Show a success message to the buyer
+                alert('Transaction completed by ' + details.payer.name.given_name + '!');
+                
+            });
+        }
+    }).render('#paypal-button-container');
+</script>
 {% endblock %}
