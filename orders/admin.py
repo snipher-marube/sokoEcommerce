@@ -29,7 +29,7 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(OrderProduct)
 class OrderProductAdmin(admin.ModelAdmin):
-    list_display = ['user', 'order', 'payment', 'product', 'variation', 'quantity', 'product_price', 'ordered']
+    list_display = ['user', 'order', 'payment', 'product',  'quantity', 'product_price', 'ordered']
     list_filter = ['ordered']
     list_per_page = 20
     search_fields = ['order__order_number', 'product__product_name']
