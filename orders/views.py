@@ -4,8 +4,27 @@ from django.shortcuts import render, redirect
 from carts.models import Cart, CartItem
 from .forms import OrderForm
 from .models import Order, Payment, OrderProduct
+import json
 
 def payments(request):
+    body = json.loads(request.body)
+    
+    # store transaction details inside payment model
+    order = Order.objects.get(user=request.user, is_ordered=False, order_number=body['orderID'])
+
+    payment = Payment(
+        user=request.user,
+        payment_id=body['transID'],
+        payment_method=body['payment_method'],
+        amount_paid=order.order_total,
+        status=body['status'],
+    )
+    payment.save()
+
+    order.payment = payment
+    order.is_ordered = True
+    order.save()
+    
     return render(request, 'orders/payments.html')
 
 def place_order(request, total=0, quantity=0):
