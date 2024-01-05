@@ -1,4 +1,5 @@
 import datetime
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
@@ -69,8 +70,13 @@ def payments(request):
 
 
     # send order number and transaction id back to sendData method via JsonResponse
+    data = {
+        'order_number': order.order_number,
+        'transID': payment.payment_id,
 
-    return render(request, 'orders/payments.html')
+    }
+
+    return JsonResponse(data)
 
 def place_order(request, total=0, quantity=0):
     current_user = request.user
@@ -136,3 +142,6 @@ def place_order(request, total=0, quantity=0):
             return render(request, 'orders/payments.html', context)
     else:
         return redirect('checkout')
+    
+def order_complete(request):
+    return render(request, 'orders/order_complete.html')
