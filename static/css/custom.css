@@ -1,0 +1,50 @@
+/**
+ * Hide Radio button
+ *
+ * @format
+ */
+
+.rate > input {
+  display: none;
+}
+.rate {
+  display: inline-block;
+  border: 0;
+}
+.rate > label {
+  float: right;
+  color: #ccc;
+}
+
+/* Order correctly by floating highest to the right */
+.rate > label::before {
+  display: inline-block;
+  margin: 0;
+  font-size: 1.25rem;
+  font-family: FontAwesome;
+  content: "\f005";
+  cursor: pointer;
+  padding: 0.3rem .2rem;
+}
+
+/* half star*/
+
+.rate > .half:before {
+  content: "\f089";
+  position: absolute;
+  padding-right: 0;
+}
+/* When the radio button is checked, add a blue background */
+.rate > input:checked ~ label {
+  color: #ffb503;
+}
+
+/* Add a yellow background color when the mouse is on the label */
+.rate > label:hover {
+  color: #ffb503;
+}
+
+/* hover highlight */
+input:checked + label:hover, input:checked ~ label:hover, input:checked ~ label:hover ~ label {
+  color: #cc9000;
+}
