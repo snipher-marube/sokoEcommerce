@@ -7,6 +7,11 @@ class PaymentAdmin(admin.ModelAdmin):
     list_display = ['user', 'payment_id', 'payment_method', 'amount_paid', 'status', 'created_at']
     list_filter = ['status', 'created_at']
 
+class OrderProductInline(admin.TabularInline):
+    model = OrderProduct
+    readonly_fields = ('payment', 'user', 'product', 'quantity', 'product_price', 'ordered')
+    extra = 0
+
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['order_number', 'full_name', 'phone', 'email', 'city', 'order_total', 'tax', 'status', 'is_ordered', 'created_at']
@@ -14,14 +19,17 @@ class OrderAdmin(admin.ModelAdmin):
     list_per_page = 20
     search_fields = ['order_number', 'first_name', 'last_name', 'phone', 'email']
     
+    inlines = [OrderProductInline]
+
     def full_name(self, obj):
         return f'{obj.first_name} {obj.last_name}'
     
     full_name.short_description = 'Name'
 
+
 @admin.register(OrderProduct)
 class OrderProductAdmin(admin.ModelAdmin):
-    list_display = ['user', 'order', 'payment', 'product', 'variations', 'quantity', 'product_price', 'ordered']
+    list_display = ['user', 'order', 'payment', 'product',  'quantity', 'product_price', 'ordered']
     list_filter = ['ordered']
     list_per_page = 20
     search_fields = ['order__order_number', 'product__product_name']
