@@ -30,6 +30,13 @@ class Product(models.Model):
         if average['average'] is not None:
             avg = float(average['average'])
         return avg
+    
+    def countReview(self):
+        reviews = ReviewRating.objects.filter(product=self, status=True).aggregate(count=models.Count('id'))
+        count = 0
+        if reviews['count'] is not None:
+            count = int(reviews['count'])
+        return count
 
 class VariationManager(models.Manager):
     def colors(self):
