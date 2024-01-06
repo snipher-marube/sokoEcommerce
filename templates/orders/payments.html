@@ -67,9 +67,8 @@
                           </a>
                           <p class="text-muted small">
                             {% if cart_item.variations.all %} 
-                            {% for item in cart_item.variations.all %} {{
-                            item.variation_category | capfirst }} : {{
-                            item.variation_value | capfirst }}
+                            {% for item in cart_item.variations.all %} 
+                            {{ item.variation_category | capfirst }} : {{ item.variation_value | capfirst }}
                             <br />
                             {% endfor %} 
                             {% endif %}
@@ -212,7 +211,7 @@
                   })
                   .then(response => response.json())
                   .then(data => {
-                    window.location.href = redirect_url + '?order_number='+data.order_number+'&payment_id='+data.payment_id+'&status='+data.status;
+                    window.location.href = redirect_url + '?order_number='+data.order_number+'&payment_id='+data.transID;
                   });
                 }
                 
