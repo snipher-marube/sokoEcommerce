@@ -44,11 +44,13 @@
   color: #ffb503;
 }
 
-/* hover highlight */
+
+
+/* When the radio button is checked, add a yellow background */
 input:checked + label:hover, input:checked ~ label:hover, input:checked ~ label:hover ~ label {
-  color: #cc9000;
+  color: #ffb503;
 }
 
-.rating-star i{
-  color: #ffb503;
+.rating-star i {
+  color: #ffb503 !important;
 }
