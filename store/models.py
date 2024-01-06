@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 
+
 from category.models import Category
 from accounts.models import Account
 
@@ -21,6 +22,22 @@ class Product(models.Model):
     
     def get_url(self):
         return reverse('product_detail', args=[self.category.slug, self.slug])
+    
+    def averageReview(self):
+        reviews = ReviewRating.objects.filter(product=self, status=True)
+        average = reviews.aggregate(average=models.Avg('rating'))
+        avg = 0
+        if average['average'] is not None:
+            avg = float(average['average'])
+        return avg
+    
+    def countReview(self):
+        reviews = ReviewRating.objects.filter(product=self, status=True).aggregate(count=models.Count('id'))
+        count = 0
+        if reviews['count'] is not None:
+            count = int(reviews['count'])
+        return count
+
 class VariationManager(models.Manager):
     def colors(self):
         return super(VariationManager, self).filter(variation_category='color', is_active=True)
