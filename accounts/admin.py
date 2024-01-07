@@ -26,7 +26,8 @@ class UserProfileAdmin(admin.ModelAdmin):
     search_fields = ('user__email', 'user__username', 'user__first_name', 'user__last_name', 'phone_number')
     list_display_links = ('user',)
     ordering = ('-user',)
+
     
     filter_horizontal = ()
-    list_filter = ()
+    list_filter = ('city', 'county')
     fieldsets = ()
