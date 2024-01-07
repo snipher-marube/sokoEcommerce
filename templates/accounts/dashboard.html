@@ -32,7 +32,7 @@
               <div class="col-md-6">
                 <div class="card" style="text-align: center;">
                   <div class="card-body">
-                    <img src="{% static 'images/avatars/avatar1.jpg' %}" alt="user profile picture"
+                    <img src="{{userprofile.profile_picture.url}}" alt="user profile picture"
                     width="50" height="50" 
                     class=" icon rounded-circle" />
                     <p class="mb-0"> {{user.email}} </p>
