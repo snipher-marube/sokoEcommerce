@@ -21,6 +21,11 @@
           <ul class="thumb">
             <li style="list-style: none;
             margin: 10px;">
+            <a href="{{single_product.image.url}}" class="thumb-link" target="mainImage">
+              <img src="{{single_product.image.url}}" alt="product gallery" style="width: 80px;
+             height: 80px;
+             border: 1px solid grey;" />
+           </a>
               {% for i in product_gallery %}
               <a href="{{i.image.url}}" class="thumb-link" target="mainImage">
                  <img src="{{i.image.url}}" alt="product gallery" style="width: 80px;
