@@ -24,7 +24,7 @@
   font-family: FontAwesome;
   content: "\f005";
   cursor: pointer;
-  padding: 0.3rem .2rem;
+  padding: 0.3rem 0.2rem;
 }
 
 /* half star*/
@@ -45,10 +45,20 @@
 }
 
 /* hover highlight */
-input:checked + label:hover, input:checked ~ label:hover, input:checked ~ label:hover ~ label {
+input:checked + label:hover,
+input:checked ~ label:hover,
+input:checked ~ label:hover ~ label {
   color: #cc9000;
 }
 
-.rating-star i{
+.rating-star i {
   color: #ffb503;
 }
+
+ul .thumb {
+  margin: 0 auto;
+  padding: 0;
+  float: left;
+}
+
+
