@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware', # new
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -164,12 +165,13 @@ AUTHENTICATION_BACKENDS = [
 # Axes configuration
 AXES_FAILURE_LIMIT = 10  # Number of login attempts before a record is created for a user's failed logins
 AXES_LOCK_OUT_AT_FAILURE = False  # Whether to lock out after `AXES_FAILURE_LIMIT` attempts
-AXES_COOLOFF_TIME = 1  # Number of seconds to wait before resetting failed login attempts
-AXES_LOGGER = 'axes.watch_login'  # Name of the logger to use
+AXES_COOLOFF_TIME = 1  # Number of seconds to wait before resetting failed login attempts count
 AXES_VERBOSE = True  # Whether to output warnings to the logger
 
 
-
+SESSION_EXPIRE_SECONDS = 3600  # 1 hour
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True # new
+SESSION_TIMEOUT_REDIRECT = 'accounts/login' # new
 
 
 # Messages
