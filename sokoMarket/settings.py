@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'store.apps.StoreConfig', # new
     'carts.apps.CartsConfig', # new
     'orders.apps.OrdersConfig', # new
+    'axes',
+   
 ]
 
 MIDDLEWARE = [
@@ -46,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware', # axes middleware
 ]
 
 ROOT_URLCONF = 'sokoMarket.urls'
@@ -149,6 +152,24 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 
 # Custom user model
 AUTH_USER_MODEL = 'accounts.Account' # new
+
+AUTHENTICATION_BACKENDS = [
+    # AxesStandaloneBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
+    'axes.backends.AxesStandaloneBackend',
+
+    # Django ModelBackend is the default authentication backend.
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# Axes configuration
+AXES_FAILURE_LIMIT = 10  # Number of login attempts before a record is created for a user's failed logins
+AXES_LOCK_OUT_AT_FAILURE = False  # Whether to lock out after `AXES_FAILURE_LIMIT` attempts
+AXES_COOLOFF_TIME = 1  # Number of seconds to wait before resetting failed login attempts
+AXES_LOGGER = 'axes.watch_login'  # Name of the logger to use
+AXES_VERBOSE = True  # Whether to output warnings to the logger
+
+
+
 
 
 # Messages
