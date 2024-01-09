@@ -61,7 +61,8 @@ def loginUser(request):
         password = request.POST['password']
 
         try:
-            user = authenticate(email=email, password=password)
+            # # Pass the request parameter to authenticate method if axes is used if not pass email and password alone
+            user = authenticate(request=request, email=email, password=password)
 
             if user is not None:
                 try:
@@ -153,7 +154,11 @@ def activate(request, uidb64, token):
 def dashboard(request):
     orders = Order.objects.order_by('-created_at').filter(user_id=request.user.id, is_ordered=True)
     orders_count = orders.count()
-    userprofile = UserProfile.objects.get(user_id=request.user.id)
+    try:
+        userprofile = UserProfile.objects.get(user_id=request.user.id)
+    except UserProfile.DoesNotExist:
+        userprofile = UserProfile(user=request.user)
+        userprofile.save()
 
     context = {
         'orders_count': orders_count,

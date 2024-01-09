@@ -17,11 +17,19 @@
           </header>
           <div class="card-body">
             <div class="text-right">
+              {% if userprofile.profile_picture %}
                 <img
                     src="{{userprofile.profile_picture.url}}"
                     class="img-sm rounded-circle mb-4"
                     alt="profile image"
                 />
+              {% else %}
+                <img
+                    src="{% static 'images/avatars/user.png' %}"
+                    class="img-sm rounded-circle mb-4"
+                    alt="profile image"
+                />
+              {% endif %}
             </div>
             <div class="row">
               <div class="col-md-12">
