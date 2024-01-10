@@ -65,10 +65,12 @@
         <a href="#">upgrade your browser</a> to improve your experience.
       </p>
     <![endif]-->
-    {% include 'includes/navbar.html' %} {% block content %}
-    <!--content goest here-->
-    {% endblock %} {% include 'includes/footer.html' %}
 
+    {% include 'includes/navbar.html' %}
+    {% block content %}
+    <!--content goest here-->
+    {% endblock %}
+    {#{% include 'includes/footer.html' %}#}
     
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <!-- custom javascript -->
