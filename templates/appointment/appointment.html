@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Appointment{% endblock %}
+{% block content %}
+{% include 'includes/messages.html' %}
+<h2 class="text-center">Book an Appointment</h2>
+  <form method="post" action="{% url 'appointment' %}" style="padding: 16px;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Book Appointment</button>
+  </form>
+  
+{% endblock %}
