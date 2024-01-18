@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, AbstractUser
 
 class MyAccountManager(BaseUserManager):
     def create_user(self, first_name, last_name, username, email, password=None):
@@ -20,6 +20,22 @@ class MyAccountManager(BaseUserManager):
         user.save(using=self._db)
         return user
     
+    # create staff
+    def create_staff(self, first_name, last_name, username, email, password=None):
+        if not email:
+            raise ValueError("Users must have an email address")
+        if not username:
+            raise ValueError("Users must have a username")
+        user = self.model(
+            email = self.normalize_email(email),
+            username = username,
+            first_name = first_name,
+            last_name = last_name,
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+    
     # create superuser
     def create_superuser(self, first_name, last_name, username, email, password):
         user = self.create_user(
@@ -36,6 +52,59 @@ class MyAccountManager(BaseUserManager):
         user.is_superuser = True
         user.save(using=self._db)
         return user
+
+class StaffPosition(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+class StaffManager(BaseUserManager):
+    def create_staff(self, first_name, last_name, username, email, password):
+        user = self.create_staff(
+            email = self.normalize_email(email),
+            username = username,
+            first_name = first_name,
+            last_name = last_name,
+            password = password,
+        )
+        user.is_admin =  True
+        user.is_staff =  True
+        user,is_active = True
+        user.is_superuser = False
+        user.save(using=self._db)
+        return user
+
+    
+
+    
+    
+class Staff(AbstractBaseUser, PermissionsMixin):
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    username = models.CharField(max_length=255, unique=True) # unique=True means that no two users can have the same username
+    email = models.EmailField(unique=True) # unique=True means that no two users can have the same email address
+    position = models.ForeignKey(StaffPosition, on_delete=models.CASCADE)
+    
+    #login field
+    USERNAME_FIELD = 'email' # username field
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name'] # required when user is created
+    
+    objects = StaffManager()
+
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+    #methods
+    def __str__(self):
+        return self.email
+    
+    def has_perm(self, perm, obj=None):
+        return self.is_admin
+    
+    def has_module_perms(self, add_label):
+        return True
+    
 
 class Account(AbstractBaseUser):
     first_name = models.CharField(max_length=255)
