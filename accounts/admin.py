@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
-from .models import Account, UserProfile, StaffPosition, Staff
-
+from .models import Account, UserProfile
 @admin.register(Account)
 class AccountAdmin(UserAdmin):
     list_display = ('email', 'username', 'first_name', 'last_name', 'date_joined', 'last_login', 'is_admin', 'is_staff', 'is_active')
@@ -32,10 +31,4 @@ class UserProfileAdmin(admin.ModelAdmin):
     list_filter = ('city', 'county')
     fieldsets = ()
 
-@admin.register(Staff)
-class StaffAdmin(admin.ModelAdmin):
-    list_display = ['email', 'username', 'position'] 
 
-@admin.register(StaffPosition)
-class StaffPositionAdmin(admin.ModelAdmin):
-    list_display = ['name']
