@@ -5,7 +5,7 @@ from .models import Account, UserProfile
 
 @admin.register(Account)
 class AccountAdmin(UserAdmin):
-    list_display = ('email', 'username', 'first_name', 'last_name', 'date_joined', 'last_login', 'is_staff', 'is_active')
+    list_display = ('email', 'username', 'first_name', 'last_name', 'date_joined', 'last_login', 'is_vendor', 'is_staff', 'is_active')
     search_fields = ('email', 'username', 'first_name', 'last_name')
     readonly_fields = ('date_joined', 'last_login')
     list_display_links = ('email', 'username', 'first_name', 'last_name')
@@ -13,7 +13,16 @@ class AccountAdmin(UserAdmin):
     
     filter_horizontal = ()
     list_filter = ()
-    fieldsets = ()
+    # Add 'is_vendor' to the 'fieldsets' attribute
+    fieldsets = (
+        *UserAdmin.fieldsets,
+        (
+            'Custom Fields',
+            {
+                'fields': ('is_vendor',),
+            },
+        ),
+    )
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):

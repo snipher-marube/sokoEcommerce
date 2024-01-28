@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager, PermissionsMixin, Group
+from django.contrib.auth.models import AbstractUser
 
 
     
@@ -9,13 +9,17 @@ class Account(AbstractUser):
     username = models.CharField(max_length=255, unique=True) # unique=True means that no two users can have the same username
     email = models.EmailField(unique=True) # unique=True means that no two users can have the same email address
     phone_number = models.CharField(max_length=15)
+    is_vendor = models.BooleanField(default=False)
     
     
     #login field
     USERNAME_FIELD = 'email' # username field
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name'] # required when user is created
     
-    #objects = MyAccountManager()
+    def save(self, *args, **kwargs):
+        if self.is_active and not self.is_vendor:
+            self.is_vendor = True
+        super().save(*args, **kwargs)
 
     def full_name(self):
         return f"{self.first_name} {self.last_name}"

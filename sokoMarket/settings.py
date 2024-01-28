@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'orders.apps.OrdersConfig', # new
     'axes',
     'appointment.apps.AppointmentConfig', # new
+    
    
    
 ]
