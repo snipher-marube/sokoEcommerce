@@ -26,6 +26,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')), # new
     path('orders/', include('orders.urls')), # new
     path('appointment/', include('appointment.urls')), # new
+   
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -7,14 +7,17 @@ from django.template.loader import render_to_string
 from django.utils.http import  urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, send_mail
 import requests
+from django.utils.html import strip_tags
 
 from .forms import RegistrationForm, UserForm, UserProfileForm
 from .models import Account, UserProfile
 from carts.models import Cart, CartItem
 from carts.views import _cart_id
 from orders.models import Order, OrderProduct
+
+from supply.forms import ProductRequestForm
 
 def registerUser(request):
     if request.method == 'POST':
@@ -94,6 +97,37 @@ def registerVendor(request):
         'form': form,
     }
     return render(request, 'accounts/register.html', context)
+
+def loginVendor(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+
+        user = authenticate(request=request, email=email, password=password)
+
+        if user is not None:
+            if user.is_vendor:
+                login(request, user)
+                messages.success(request, 'Login successful')
+                url = request.META.get('HTTP_REFERER')
+                try:
+                    query = requests.utils.urlparse(url).query
+                    # next=/cart/checkout/
+                    params = dict(x.split('=') for x in query.split('&'))
+                    if 'next' in params:
+                        nextPage = params['next']
+                        return redirect(nextPage)
+
+                except:
+                    return redirect('supplyDashboard')
+            else:
+                messages.error(request, 'Invalid login credentials')
+                return redirect('loginVendor')
+        else:
+            messages.error(request, 'Invalid login credentials')
+            return redirect('login')
+    return render(request, 'accounts/login.html')
+            
 
 def loginUser(request):
     if request.method == 'POST':
@@ -205,6 +239,8 @@ def dashboard(request):
         'userprofile': userprofile,
     }
     return render(request, 'accounts/dashboard.html', context)
+
+
 
 def forgotPassword(request):
     if request.method == 'POST':
@@ -342,4 +378,40 @@ def order_detail(request, order_id):
         'subtotal': subtotal,
     }
     return render(request, 'accounts/order_detail.html', context)
+
+@login_required
+@login_required
+def product_request(request):
+    if request.method == 'POST':
+        form = ProductRequestForm(request.POST, request.FILES)
+        if form.is_valid():
+            product_request = form.save(commit=False)
+            product_request.vendor = request.user
+            product_request.save()
+            messages.success(request, 'Your supply product request has been submitted successfully')
+
+            # Send email to vendor when the request is approved or rejected
+            current_site = get_current_site(request)
+            mail_subject = "Product Request"
+            message = render_to_string('supply/product_request_email.html', {
+                'user': request.user,
+                'domain': current_site.domain,
+                'product_request': product_request,
+            })
+            to_email = request.user.email
+
+            send_mail(
+                mail_subject,
+                strip_tags(message),  # Use plain text for the email body
+                'snipherblog@gmail.com',  # Replace with your sending email address
+                [to_email],
+                html_message=message,  # Include HTML content for the email body
+            )
+
+            # Create a new instance of the form to clear it
+            form = ProductRequestForm()
+    else:
+        form = ProductRequestForm()
+    return render(request, 'supply/product_request.html', {'form': form})
+
 
