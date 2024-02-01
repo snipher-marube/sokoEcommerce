@@ -13,7 +13,6 @@ class ProductRequest(models.Model):
     product_image = models.ImageField(upload_to='images/')
     product_price = models.DecimalField(max_digits=10, decimal_places=2)
     product_quantity = models.IntegerField()
-    total = models.FloatField()
     date_created = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=100, choices=STATUS, default='Pending')
 
@@ -24,9 +23,7 @@ class ProductRequest(models.Model):
         verbose_name_plural = 'Product Requests'
         ordering = ['-date_created']
 
-    def save(self, *args, **kwargs):
-        total = self.product_price * self.product_quantity
-        super(ProductRequest, total)
+    
    
 
 

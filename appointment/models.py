@@ -25,6 +25,7 @@ class Appointment(models.Model):
     phone_number = models.CharField(max_length=15)
     date = models.DateField()
     time = models.TimeField()
+    location = models.CharField(max_length=100)
     message = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

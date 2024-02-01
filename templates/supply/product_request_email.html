@@ -8,17 +8,7 @@
 <body>
     <p>Dear {{ user.first_name }} {{user.last_name}},</p>
 
-    <p>Your product request for "{{ product_request.product_name }}" has been {% if product_request.status == 'Approved' %}approved{% elif product_request.status == 'Rejected' %}rejected{% endif %}.</p>
-
-    {% if product_request.status == 'Approved' %}
-        <p>Here are the details:</p>
-        <ul>
-            <li>Product Name: {{ product_request.product_name }}</li>
-            <li>Product Description: {{ product_request.product_description }}</li>
-            <li>Product Price: ${{ product_request.product_price }}</li>
-            <li>Product Quantity: {{ product_request.product_quantity }}</li>
-        </ul>
-    {% endif %}
+    <p>Your product request for "{{ product_request.product_name }}" has been received we will contact you if approved</p>
 
     <p>Thank you for your submission.</p>
 

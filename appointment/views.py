@@ -12,8 +12,11 @@ def appointment(request):
             form.instance.user = request.user
             form.save()
             messages.success(request, 'Your appointment has been booked!')
+        else:
+            messages.error(request, 'Please correct the error below.')
     else:
         form = AppointmentForm()
+    
     return render(request, 'appointment/appointment.html', {'form': form})
 
 
