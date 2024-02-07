@@ -63,7 +63,6 @@
     ></script>
     <!-- Include the PayPal JavaScript SDK -->
     <script src="https://www.paypal.com/sdk/js?client-id=AXPJyhCjaTIG1VJjWUmKD05qRtIp1x6f9-XaHAqrKda9zw1-W4SQBvYghEnppEXqO_nCdB63j_CIBDQ5&currency=USD"></script>
-    
   </head>
   <body>
     <!--[if lt IE 7]>
@@ -81,20 +80,16 @@
     <!-- custom javascript -->
     <script src="{% static 'js/script.js' %}" type="text/javascript"></script>
     <!--Live chat-->
-    <!--Start of Tawk.to Script-->
-    <script type="text/javascript">
-      var Tawk_API = Tawk_API || {},
-        Tawk_LoadStart = new Date();
-      (function () {
-        var s1 = document.createElement("script"),
-          s0 = document.getElementsByTagName("script")[0];
-        s1.async = true;
-        s1.src = "https://embed.tawk.to/65adabf90ff6374032c31f58/1hkn6fi80";
-        s1.charset = "UTF-8";
-        s1.setAttribute("crossorigin", "*");
-        s0.parentNode.insertBefore(s1, s0);
-      })();
-    </script>
-    <!--End of Tawk.to Script-->
+    <!--Start of Whatsapp Script-->
+    <script
+      src="https://static.elfsight.com/platform/platform.js"
+      data-use-service-core
+      defer
+    ></script>
+    <div
+      class="elfsight-app-0b38fe19-1d2d-47f2-8a58-e4743a1aff15"
+      data-elfsight-app-lazy
+    ></div>
+    <!--End of Whatsaap Script-->
   </body>
 </html>
