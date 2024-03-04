@@ -10,8 +10,9 @@ class AccountAdmin(UserAdmin):
     readonly_fields = ('date_joined', 'last_login')
     list_display_links = ('email', 'username', 'first_name', 'last_name')
     ordering = ('-date_joined',)
-    
+    list_editable = ['status']
     filter_horizontal = ()
+    list_filter = ['status', 'email']
    
 
 @admin.register(UserProfile)

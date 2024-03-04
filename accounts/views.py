@@ -36,7 +36,6 @@ def registerUser(request):
             user = Account.objects.create_user(first_name=first_name, last_name=last_name, email=email, username=username,
                                                address=address, city=city, county=county, password=password, status='pending')
             user.phone_number = phone_number
-            user.is_active = False
             user.save()
             messages.success(request, "Your account has been created. Please wait for admin approval.")
             return redirect('login')
@@ -63,7 +62,6 @@ def registerVendor(request):
 
             user = Account.objects.create_user(first_name=first_name, last_name=last_name, email=email, username=username, password=password)
             user.phone_number = phone_number
-            user.is_vendor = False
             user.save()
             messages.success(request, "Your account has been created. Please wait for admin approval.")
             return redirect('/accounts/login/?command=verification&email='+email)

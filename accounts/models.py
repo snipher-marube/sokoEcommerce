@@ -38,13 +38,17 @@ class Account(AbstractUser):
     def __str__(self):
         return self.email
     
+    class Meta:
+        verbose_name = 'client'
+        verbose_name_plural = 'clients'
+    
     
 class UserProfile(models.Model):
     
     user = models.OneToOneField(Account, on_delete=models.CASCADE)
     address_line_1 = models.CharField(max_length=255, blank=True)
     address_line_2 = models.CharField(max_length=255, blank=True)
-    profile_picture = models.ImageField(upload_to='userprofile/', blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='userprofile/', blank=True, null=True, default='../static/images/avatars/user.png')
     city = models.CharField(max_length=255, blank=True)
     county = models.CharField(max_length=255, blank=True)
     
@@ -53,5 +57,9 @@ class UserProfile(models.Model):
     
     def full_address(self):
         return f"{self.address_line_1} {self.address_line_2}"
+    
+    class Meta:
+        verbose_name = 'client profile'
+        verbose_name_plural = 'client profiles'
     
 
