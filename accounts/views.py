@@ -27,28 +27,20 @@ def registerUser(request):
             last_name = form.cleaned_data['last_name']
             email = form.cleaned_data['email']
             phone_number = form.cleaned_data['phone_number']
+            address = form.cleaned_data['address']
+            city = form.cleaned_data['city']
+            county = form.cleaned_data['county']
             password = form.cleaned_data['password']
             username = email.split('@')[0]
 
-            user = Account.objects.create_user(first_name=first_name, last_name=last_name, email=email, username=username, password=password)
+            user = Account.objects.create_user(first_name=first_name, last_name=last_name, email=email, username=username,
+                                               address=address, city=city, county=county, password=password, status='pending')
             user.phone_number = phone_number
+            user.is_active = False
             user.save()
+            messages.success(request, "Your account has been created. Please wait for admin approval.")
+            return redirect('login')
 
-            # User activation
-            current_site = get_current_site(request)
-            mail_subject = "Please activate your account"
-            message = render_to_string('accounts/account_verification_email.html', {
-                'user': user,
-                'domain': current_site,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': default_token_generator.make_token(user),
-            })
-            to_email = email
-            send_email = EmailMessage(mail_subject, message, to=[to_email])
-            send_email.send()
-
-            #messages.success(request, 'Thank you for registering with us. We have sent you a verification email to your email address. Please verify it.')
-            return redirect('/accounts/login/?command=verification&email='+email)
 
     else:
         form = RegistrationForm()
@@ -73,22 +65,10 @@ def registerVendor(request):
             user.phone_number = phone_number
             user.is_vendor = False
             user.save()
-
-            # User activation
-            current_site = get_current_site(request)
-            mail_subject = "Please activate your account"
-            message = render_to_string('accounts/account_verification_email.html', {
-                'user': user,
-                'domain': current_site,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': default_token_generator.make_token(user),
-            })
-            to_email = email
-            send_email = EmailMessage(mail_subject, message, to=[to_email])
-            send_email.send()
-
-            #messages.success(request, 'Thank you for registering with us. We have sent you a verification email to your email address. Please verify it.')
+            messages.success(request, "Your account has been created. Please wait for admin approval.")
             return redirect('/accounts/login/?command=verification&email='+email)
+
+        
 
     else:
         form = RegistrationForm()
@@ -100,72 +80,39 @@ def registerVendor(request):
 
 def loginVendor(request):
     if request.method == 'POST':
-        email = request.POST['email']
-        password = request.POST['password']
+        email = request.POST.get('email')
+        password = request.POST.get('password')
 
         user = authenticate(request=request, email=email, password=password)
 
         if user is not None:
-            if user.is_vendor:
+            if user.status == 'accepted':
                 login(request, user)
                 messages.success(request, 'Login successful')
-                url = request.META.get('HTTP_REFERER')
-                try:
-                    query = requests.utils.urlparse(url).query
-                    # next=/cart/checkout/
-                    params = dict(x.split('=') for x in query.split('&'))
-                    if 'next' in params:
-                        nextPage = params['next']
-                        return redirect(nextPage)
-
-                except:
-                    return redirect('supplyDashboard')
-            else:
-                messages.error(request, 'Invalid login credentials')
-                return redirect('loginVendor')
-        else:
-            messages.error(request, 'Invalid login credentials')
-            return redirect('login')
-    return render(request, 'accounts/login.html')
-            
-
-def loginUser(request):
-    if request.method == 'POST':
-        email = request.POST['email']
-        password = request.POST['password']
-
-        try:
-            # # Pass the request parameter to authenticate method if axes is used if not pass email and password alone
-            user = authenticate(request=request, email=email, password=password)
-
-            if user is not None:
+                # Merge cart items if user had any as a guest
                 try:
                     cart = Cart.objects.get(cart_id=_cart_id(request))
                     is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
                     if is_cart_item_exists:
                         cart_item = CartItem.objects.filter(cart=cart)
-                        
-                        # Getting the product variations by cart id
                         product_variation = []
                         for item in cart_item:
                             variation = item.variations.all()
                             product_variation.append(list(variation))
-
-                        # Get the cart items from the user to access his product variations
-                        cart_item = CartItem.objects.filter(user=user)
+                        
+                        cart_items = CartItem.objects.filter(user=user)
                         existing_variations_list = []
                         id = []
-                        for item in cart_item:
+                        for item in cart_items:
                             existing_variation = item.variations.all()
                             existing_variations_list.append(list(existing_variation))
                             id.append(item.id)
-
+                        
                         for pr in product_variation:
                             if pr in existing_variations_list:
                                 index = existing_variations_list.index(pr)
                                 item_id = id[index]
                                 item = CartItem.objects.get(id=item_id)
-                                item.user = user
                                 item.quantity += 1
                                 item.save()
                             else:
@@ -173,31 +120,87 @@ def loginUser(request):
                                 for item in cart_item:
                                     item.user = user
                                     item.save()
-                except:
-                    pass 
-
-                login(request, user)
-                messages.success(request, 'Login successful')
+                except Cart.DoesNotExist:
+                    pass
                 url = request.META.get('HTTP_REFERER')
                 try:
                     query = requests.utils.urlparse(url).query
-                    # next=/cart/checkout/
                     params = dict(x.split('=') for x in query.split('&'))
                     if 'next' in params:
                         nextPage = params['next']
                         return redirect(nextPage)
-
                 except:
                     return redirect('dashboard')
-                
-            else:
-                messages.error(request, 'Invalid login credentials')
-                return redirect('login')
+            elif user.status == 'pending':
+                messages.error(request, 'Your account is pending approval. Please wait for admin approval.')
+            elif user.status == 'rejected':
+                messages.error(request, 'Your account has been rejected. Please contact admin for further information.')
+        else:
+            messages.error(request, 'Invalid login credentials')
+
+    return render(request, 'accounts/login.html')
             
-        except Account.DoesNotExist:
-            messages.error(request, 'Account does not exist')
-            return redirect('login')
-        
+
+def loginUser(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        user = authenticate(request=request, email=email, password=password)
+
+        if user is not None:
+            if user.status == 'accepted':
+                login(request, user)
+                messages.success(request, 'Login successful')
+                # Merge cart items if user had any as a guest
+                try:
+                    cart = Cart.objects.get(cart_id=_cart_id(request))
+                    is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                    if is_cart_item_exists:
+                        cart_item = CartItem.objects.filter(cart=cart)
+                        product_variation = []
+                        for item in cart_item:
+                            variation = item.variations.all()
+                            product_variation.append(list(variation))
+                        
+                        cart_items = CartItem.objects.filter(user=user)
+                        existing_variations_list = []
+                        id = []
+                        for item in cart_items:
+                            existing_variation = item.variations.all()
+                            existing_variations_list.append(list(existing_variation))
+                            id.append(item.id)
+                        
+                        for pr in product_variation:
+                            if pr in existing_variations_list:
+                                index = existing_variations_list.index(pr)
+                                item_id = id[index]
+                                item = CartItem.objects.get(id=item_id)
+                                item.quantity += 1
+                                item.save()
+                            else:
+                                cart_item = CartItem.objects.filter(cart=cart)
+                                for item in cart_item:
+                                    item.user = user
+                                    item.save()
+                except Cart.DoesNotExist:
+                    pass
+                url = request.META.get('HTTP_REFERER')
+                try:
+                    query = requests.utils.urlparse(url).query
+                    params = dict(x.split('=') for x in query.split('&'))
+                    if 'next' in params:
+                        nextPage = params['next']
+                        return redirect(nextPage)
+                except:
+                    return redirect('dashboard')
+            elif user.status == 'pending':
+                messages.error(request, 'Your account is pending approval. Please wait for admin approval.')
+            elif user.status == 'rejected':
+                messages.error(request, 'Your account has been rejected. Please contact admin for further information.')
+        else:
+            messages.error(request, 'Invalid login credentials')
+
     return render(request, 'accounts/login.html')
 
 

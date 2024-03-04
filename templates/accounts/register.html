@@ -1,9 +1,7 @@
 <!-- @format -->
 
-{% extends 'base.html' %} 
-{% block title %}Register{% endblock %} 
-{% load static%} 
-{% block content %}
+{% extends 'base.html' %} {% block title %}Register{% endblock %} {% load
+static%} {% block content %}
 
 <!-- ========================= SECTION CONTENT ========================= -->
 <section class="section-content padding-y">
@@ -12,7 +10,7 @@
     <article class="card-body">
       {% include 'includes/messages.html' %}
       <header class="mb-4"><h4 class="card-title">Sign up</h4></header>
-      
+
       <form action="{% url 'register' %}" method="POST">
         {% csrf_token %}
 
@@ -29,7 +27,6 @@
           <!-- form-group end.// -->
         </div>
 
-        
         <!-- form-row end.// -->
         <div class="form-group">
           <label>Email</label>
@@ -39,7 +36,7 @@
           >
         </div>
         <!-- form-group end.// -->
-        
+
         <!-- form-group end.// -->
         <div class="form-row">
           <div class="form-group col-md-6">
@@ -47,7 +44,34 @@
             {{form.phone_number}}
           </div>
           <!-- form-group end.// -->
-          
+
+          <!-- form-group end.// -->
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>Address</label>
+            {{form.address}}
+          </div>
+          <!-- form-group end.// -->
+
+          <!-- form-group end.// -->
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>City</label>
+            {{form.city}}
+          </div>
+          <!-- form-group end.// -->
+
+          <!-- form-group end.// -->
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>County</label>
+            {{form.county}}
+          </div>
+          <!-- form-group end.// -->
+
           <!-- form-group end.// -->
         </div>
         <!-- form-row.// -->
@@ -68,17 +92,20 @@
             Register
           </button>
         </div>
-        {{form.email.errors}}
-      {{form.non_field_errors}}
+        {{form.email.errors}} {{form.non_field_errors}}
         <!-- form-group// -->
       </form>
     </article>
     <!-- card-body.// -->
   </div>
   <!-- card .// -->
-  
-  <p class="text-center mt-4">Have a Vendor account? <a href="{% url 'loginVendor' %}">Log In</a></p>
-  <p class="text-center mt-4">Have an account? <a href="{% url 'login' %}">Log In</a></p>
+
+  <p class="text-center mt-4">
+    Have a Vendor account? <a href="{% url 'loginVendor' %}">Log In</a>
+  </p>
+  <p class="text-center mt-4">
+    Have an account? <a href="{% url 'login' %}">Log In</a>
+  </p>
 
   <!-- ============================ COMPONENT REGISTER  END.// ================================= -->
 </section>

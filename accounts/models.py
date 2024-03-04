@@ -4,11 +4,21 @@ from django.contrib.auth.models import AbstractUser
 
     
 class Account(AbstractUser):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    ]
+
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     username = models.CharField(max_length=255, unique=True) # unique=True means that no two users can have the same username
     email = models.EmailField(unique=True) # unique=True means that no two users can have the same email address
     phone_number = models.CharField(max_length=15)
+    address = models.CharField(max_length=255, blank=True)
+    city = models.CharField(max_length=255, blank=True)
+    county = models.CharField(max_length=255, blank=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     is_vendor = models.BooleanField(default=False)
     
     
