@@ -1,0 +1,12 @@
+<!-- create_commodity.html -->
+{% extends 'base.html' %}
+{% block title %}Create Commodity{% endblock %}
+{% load static %}
+{% block content %}
+  <h2>Create Commodity</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create Commodity</button>
+  </form>
+{% endblock %}

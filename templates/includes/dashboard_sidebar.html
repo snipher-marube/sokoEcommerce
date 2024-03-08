@@ -2,9 +2,6 @@
     <!--   SIDEBAR   -->
     <ul class="list-group">
       <a class="list-group-item {% if '/accounts/' == request.path %}active{% endif %}" href="{% url 'dashboard' %}"> Dashboard </a>
-      {% if request.user.is_vendor %}
-      <a class="list-group-item {% if '/product_request/' in request.path %}active{% endif %}" href="{% url 'product_request' %}"> Make Supply Request</a>
-      {% endif %}
       <a class="list-group-item {% if '/my_orders/' in request.path %}active{% endif %}" href="{% url 'my_orders' %}"> My Orders </a>
       <a class="list-group-item {% if '/edit_profile/' in request.path %}active{% endif %}" href="{% url 'edit_profile' %}"> Edit Profile </a>
       <a class="list-group-item {% if '/change_password/' in request.path %}active{% endif %}" href="{% url 'change_password' %}">Change Password </a>

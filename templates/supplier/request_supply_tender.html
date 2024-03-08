@@ -1,0 +1,10 @@
+<!-- @format -->
+
+{% extends 'base.html' %} {% load static %} {% block title %}Supply Request{% endblock %} 
+{% block content %}
+<h2>Request Supply Tender</h2>
+<form action="{% url 'request_supply_tender' %}" method="POST">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Submit Request</button>
+</form>
+{% endblock %}

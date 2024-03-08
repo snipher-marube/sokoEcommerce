@@ -1,0 +1,92 @@
+<!-- @format -->
+
+{% extends 'base.html' %} 
+{% block title %}Supplier Dashboard{% endblock %}
+{% load static %} 
+{% block content %}
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg">
+  {% include 'includes/messages.html' %}
+  <div class="container">
+    <div class="row">
+      {% include 'includes/supplier_sidebar.html' %}
+      <main class="col-md-9">
+        <article class="card">
+          <header class="card-header">
+            <strong class="d-inline-block mr-3">Logged in as:</strong>
+            <span> {{user.full_name}} </span>
+          </header>
+          <div class="card-body">
+            <div class="row">
+              
+              <div class="col-md-6">
+                <div class="card" style="text-align: center;">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Supply Tender Requests</h5>
+                    <h4> {{supplies_count}} </h4>
+                    <a href="{% url 'supply_requests' %}">View Requests</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="card" style="text-align: center;">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Approved Supply Tender Requests</h5>
+                    <h4> {{approved_supplies_count}} </h4>
+                    <a href="{% url 'approved_supply_requests' %}">View Requests</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="card" style="text-align: center;">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Rejected Supply Tender Requests</h5>
+                    <h4> {{rejected_supplies_count}} </h4>
+                    <a href="{% url 'rejected_supply_requests' %}">View Requests</a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card" style="text-align: center;">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Pending Supply Tender Requests</h5>
+                    <h4> {{pending_supplies_count}} </h4>
+                    <a href="{% url 'pending_supply_requests' %}">View Requests</a>
+                  </div>
+                </div>
+              </div>
+              <!-- col.// -->
+              <div class="col-md-6">
+                <div class="card" style="text-align: center;">
+                  <div class="card-body">
+                    {% if userprofile.profile_picture %}
+                    <img src="{{userprofile.profile_picture.url}}" alt="user profile picture"
+                    width="50" height="50" 
+                    class=" icon rounded-circle" />
+                    {% else %}
+                    <img src="{% static 'images/avatars/user.png' %}" alt="user profile picture"
+                    width="50" height="50"
+                    class=" icon rounded-circle" />
+                    {% endif %}
+                    <p class="mb-0"> {{user.email}} </p>
+                    <p> {{user.phone_number}} </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- row.// -->
+          </div>
+          <!-- card-body .// -->
+          
+          <!-- table-responsive .end// -->
+        </article>
+        <!-- order-group.// -->
+      </main>
+    </div>
+    <!-- row.// -->
+  </div>
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+{% endblock %}

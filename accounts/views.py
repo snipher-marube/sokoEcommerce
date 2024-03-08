@@ -112,8 +112,8 @@ def loginUser(request):
                 
             elif user.status == 'accepted' and user.is_vendor == True:
                 login(request, user)
-                messages.success(request, 'You are a supplier')
-                return redirect('home')
+                messages.success(request, 'Login successful as a supplier')
+                return redirect('supplier_dashboard')
             
             elif user.status == 'pending':
                 messages.error(request, 'Your account is pending approval. Please wait for admin approval.')
@@ -302,40 +302,4 @@ def order_detail(request, order_id):
         'subtotal': subtotal,
     }
     return render(request, 'accounts/order_detail.html', context)
-
-@login_required
-@login_required
-def product_request(request):
-    if request.method == 'POST':
-        form = ProductRequestForm(request.POST, request.FILES)
-        if form.is_valid():
-            product_request = form.save(commit=False)
-            product_request.vendor = request.user
-            product_request.save()
-            messages.success(request, 'Your supply product request has been submitted successfully')
-
-            # Send email to vendor when the request is approved or rejected
-            current_site = get_current_site(request)
-            mail_subject = "Product Request"
-            message = render_to_string('supply/product_request_email.html', {
-                'user': request.user,
-                'domain': current_site.domain,
-                'product_request': product_request,
-            })
-            to_email = request.user.email
-
-            send_mail(
-                mail_subject,
-                strip_tags(message),  # Use plain text for the email body
-                'snipherblog@gmail.com',  # Replace with your sending email address
-                [to_email],
-                html_message=message,  # Include HTML content for the email body
-            )
-
-            # Create a new instance of the form to clear it
-            form = ProductRequestForm()
-    else:
-        form = ProductRequestForm()
-    return render(request, 'supply/product_request.html', {'form': form})
-
 

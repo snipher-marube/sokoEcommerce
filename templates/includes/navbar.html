@@ -92,7 +92,11 @@
                         <div>
                             {% if request.user.is_authenticated %}
                                 <small class="title text-muted">Welcome {{ user.first_name }} {{ user.last_name }}</small>
-                                <a href="{% url 'dashboard' %}">Dashboard</a>
+                                {% if request.user.is_vendor == True %}
+                                    <a href="{% url 'supplier_dashboard' %}">Dashboard</a>
+                                {% else %}
+                                    <a href="{% url 'dashboard' %}">Dashboard</a>
+                                {% endif %}
                                 <span class="dark-transp"> | </span>
                                 <a class="text-danger" type="button" href="{% url 'logout' %}">Logout</a>
                             {% else %}

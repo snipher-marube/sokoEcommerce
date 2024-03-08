@@ -1,0 +1,44 @@
+<!-- request_detail.html -->
+{% extends 'base.html' %} 
+{% block title %}Request Detail{% endblock %}
+{% load static %} 
+{% block content %}
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg">
+  {% include 'includes/messages.html' %}
+  <div class="container">
+    <div class="row">
+      <main class="col-md-12">
+        <article class="card">
+          <header class="card-header">
+            <strong class="d-inline-block mr-3">Request Details:</strong>
+          </header>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <h3>Supply Request ID: {{ supply_request.id }}</h3>
+                <p>Status: {{ supply_request.status }}</p>
+                <p>Created: {{ supply_request.created }}</p>
+                <p>Updated: {{ supply_request.updated }}</p>
+                <h4>Commodities:</h4>
+                <ul>
+                  {% for commodity in supply_request.commodities.all %}
+                    <li>{{ commodity.name }} - Available Amount: {{ commodity.available_amount }} - Price per each: ${{ commodity.price }}</li>
+                  {% endfor %}
+                </ul>
+                <h4>Total Price: ${{ total_price }}</h4>
+              </div>
+            </div>
+            <!-- row.// -->
+          </div>
+          <!-- card-body .// -->
+          <!-- table-responsive .end// -->
+        </article>
+        <!-- order-group.// -->
+      </main>
+    </div>
+    <!-- row.// -->
+  </div>
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+{% endblock %}

@@ -1,0 +1,62 @@
+<!-- @format -->
+
+{% extends 'base.html' %} 
+{% block title %}My Tender requests{% endblock %}
+{% load static %} 
+{% block content %}
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg">
+  {% include 'includes/messages.html' %}
+  <div class="container">
+    <div class="row">
+      {% include 'includes/supplier_sidebar.html' %}
+      <main class="col-md-9">
+        <article class="card">
+          <header class="card-header">
+            <strong class="d-inline-block mr-3">Your Tender Supply Requests:</strong>
+            
+          </header>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <table class="table table-hover">
+                    <thead>
+                        
+                      <tr>
+                        <th scope="col">Supply #</th>
+                        <th scope="col">Commodities</th>
+                        <th scope="col">status</th>
+                        <th scope="col">created</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for supply in supply_requests %}
+                      <tr>
+                        <th scope="row"> <a href="{% url 'request_detail' supply.id %}"> {{supply.id}} </a></th>
+                        <td> 
+                            {% for commodity in supply.commodities.all %}
+                            {{ commodity.name }}{% if not forloop.last %}, {% endif %}
+                          {% endfor %}
+                        </td>
+                        <td> {{supply.status}} </td>
+                        <td> {{supply.created}} </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+            <!-- row.// -->
+          </div>
+          <!-- card-body .// -->
+          
+          <!-- table-responsive .end// -->
+        </article>
+        <!-- order-group.// -->
+      </main>
+    </div>
+    <!-- row.// -->
+  </div>
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+{% endblock %}
