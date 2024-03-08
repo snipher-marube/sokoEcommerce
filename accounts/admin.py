@@ -5,14 +5,14 @@ from .models import Account, UserProfile
 
 @admin.register(Account)
 class AccountAdmin(UserAdmin):
-    list_display = ('email', 'username', 'first_name', 'last_name', 'address', 'city', 'county', 'date_joined', 'last_login', 'is_staff', 'status')
+    list_display = ('email', 'username', 'first_name', 'last_name', 'address', 'city', 'county', 'date_joined', 'last_login', 'is_staff', 'status', 'is_vendor')
     search_fields = ('email', 'username', 'first_name', 'last_name')
     readonly_fields = ('date_joined', 'last_login')
     list_display_links = ('email', 'username', 'first_name', 'last_name')
     ordering = ('-date_joined',)
     list_editable = ['status']
     filter_horizontal = ()
-    list_filter = ['status', 'email']
+    list_filter = ['status', 'email', 'is_vendor']
    
 
 @admin.register(UserProfile)

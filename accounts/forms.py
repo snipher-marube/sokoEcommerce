@@ -12,6 +12,8 @@ class RegistrationForm(forms.ModelForm):
         'placeholder': 'Confirm Password',
         'class': 'form-control',
     }))
+
+    user_type = forms.ChoiceField(choices=(('client', 'Client'), ('supplier', 'Supplier')), widget=forms.RadioSelect)
     
     class Meta:
         model = Account
@@ -27,7 +29,7 @@ class RegistrationForm(forms.ModelForm):
         self.fields['phone_number'].widget.attrs['placeholder'] = 'Enter Phone Number'
         self.fields['address'].widget.attrs['placeholder'] = 'Enter Address'
         self.fields['city'].widget.attrs['placeholder'] = 'Enter City'
-        self.fields['county'].widget.attrs['placeholder'] = 'Enter '
+        self.fields['county'].widget.attrs['placeholder'] = 'Enter County'
         
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'

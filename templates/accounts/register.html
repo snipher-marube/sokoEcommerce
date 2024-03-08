@@ -75,6 +75,7 @@ static%} {% block content %}
           <!-- form-group end.// -->
         </div>
         <!-- form-row.// -->
+        
         <div class="form-row">
           <div class="form-group col-md-6">
             <label>Create password</label>
@@ -86,6 +87,11 @@ static%} {% block content %}
             {{form.confirm_password}}
           </div>
           <!-- form-group end.// -->
+
+        </div>
+        <div class="form-group d-flex">
+          <label>User Type</label><br>
+          {{ form.user_type }}
         </div>
         <div class="form-group">
           <button type="submit" class="btn btn-primary btn-block">
@@ -100,9 +106,6 @@ static%} {% block content %}
   </div>
   <!-- card .// -->
 
-  <p class="text-center mt-4">
-    Have a Vendor account? <a href="{% url 'loginVendor' %}">Log In</a>
-  </p>
   <p class="text-center mt-4">
     Have an account? <a href="{% url 'login' %}">Log In</a>
   </p>

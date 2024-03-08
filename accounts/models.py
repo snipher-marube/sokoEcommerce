@@ -26,10 +26,7 @@ class Account(AbstractUser):
     USERNAME_FIELD = 'email' # username field
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name'] # required when user is created
     
-    def save(self, *args, **kwargs):
-        if self.is_active and not self.is_vendor:
-            self.is_vendor = True
-        super().save(*args, **kwargs)
+   
 
     def full_name(self):
         return f"{self.first_name} {self.last_name}"

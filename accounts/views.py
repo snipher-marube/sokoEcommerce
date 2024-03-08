@@ -17,7 +17,7 @@ from carts.models import Cart, CartItem
 from carts.views import _cart_id
 from orders.models import Order, OrderProduct
 
-from supply.forms import ProductRequestForm
+
 
 def registerUser(request):
     if request.method == 'POST':
@@ -36,7 +36,13 @@ def registerUser(request):
             user = Account.objects.create_user(first_name=first_name, last_name=last_name, email=email, username=username,
                                                address=address, city=city, county=county, password=password, status='pending')
             user.phone_number = phone_number
+            user_type = form.cleaned_data['user_type']
+            if user_type == 'supplier':
+                user.is_vendor = True  # Mark user as a supplier
             user.save()
+            # If user is a supplier, create a corresponding UserProfile
+            if user.is_vendor:
+                UserProfile.objects.create(user=user)
             messages.success(request, "Your account has been created. Please wait for admin approval.")
             return redirect('login')
 
@@ -48,96 +54,7 @@ def registerUser(request):
         'form': form,
     }
     return render(request, 'accounts/register.html', context)
-
-def registerVendor(request):
-    if request.method == 'POST':
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name'] 
-            email = form.cleaned_data['email']
-            phone_number = form.cleaned_data['phone_number']
-            password = form.cleaned_data['password']
-            username = email.split('@')[0]
-
-            user = Account.objects.create_user(first_name=first_name, last_name=last_name, email=email, username=username, password=password)
-            user.phone_number = phone_number
-            user.save()
-            messages.success(request, "Your account has been created. Please wait for admin approval.")
-            return redirect('/accounts/login/?command=verification&email='+email)
-
-        
-
-    else:
-        form = RegistrationForm()
-
-    context = {
-        'form': form,
-    }
-    return render(request, 'accounts/register.html', context)
-
-def loginVendor(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-
-        user = authenticate(request=request, email=email, password=password)
-
-        if user is not None:
-            if user.status == 'accepted':
-                login(request, user)
-                messages.success(request, 'Login successful')
-                # Merge cart items if user had any as a guest
-                try:
-                    cart = Cart.objects.get(cart_id=_cart_id(request))
-                    is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
-                    if is_cart_item_exists:
-                        cart_item = CartItem.objects.filter(cart=cart)
-                        product_variation = []
-                        for item in cart_item:
-                            variation = item.variations.all()
-                            product_variation.append(list(variation))
-                        
-                        cart_items = CartItem.objects.filter(user=user)
-                        existing_variations_list = []
-                        id = []
-                        for item in cart_items:
-                            existing_variation = item.variations.all()
-                            existing_variations_list.append(list(existing_variation))
-                            id.append(item.id)
-                        
-                        for pr in product_variation:
-                            if pr in existing_variations_list:
-                                index = existing_variations_list.index(pr)
-                                item_id = id[index]
-                                item = CartItem.objects.get(id=item_id)
-                                item.quantity += 1
-                                item.save()
-                            else:
-                                cart_item = CartItem.objects.filter(cart=cart)
-                                for item in cart_item:
-                                    item.user = user
-                                    item.save()
-                except Cart.DoesNotExist:
-                    pass
-                url = request.META.get('HTTP_REFERER')
-                try:
-                    query = requests.utils.urlparse(url).query
-                    params = dict(x.split('=') for x in query.split('&'))
-                    if 'next' in params:
-                        nextPage = params['next']
-                        return redirect(nextPage)
-                except:
-                    return redirect('dashboard')
-            elif user.status == 'pending':
-                messages.error(request, 'Your account is pending approval. Please wait for admin approval.')
-            elif user.status == 'rejected':
-                messages.error(request, 'Your account has been rejected. Please contact admin for further information.')
-        else:
-            messages.error(request, 'Invalid login credentials')
-
-    return render(request, 'accounts/login.html')
-            
+           
 
 def loginUser(request):
     if request.method == 'POST':
@@ -147,9 +64,9 @@ def loginUser(request):
         user = authenticate(request=request, email=email, password=password)
 
         if user is not None:
-            if user.status == 'accepted':
+            if user.status == 'accepted' and user.is_vendor == False:
                 login(request, user)
-                messages.success(request, 'Login successful')
+                messages.success(request, 'Login successful as a client')
                 # Merge cart items if user had any as a guest
                 try:
                     cart = Cart.objects.get(cart_id=_cart_id(request))
@@ -192,6 +109,12 @@ def loginUser(request):
                         return redirect(nextPage)
                 except:
                     return redirect('dashboard')
+                
+            elif user.status == 'accepted' and user.is_vendor == True:
+                login(request, user)
+                messages.success(request, 'You are a supplier')
+                return redirect('home')
+            
             elif user.status == 'pending':
                 messages.error(request, 'Your account is pending approval. Please wait for admin approval.')
             elif user.status == 'rejected':
