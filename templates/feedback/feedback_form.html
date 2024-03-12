@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Leave some feedback{% endblock %}
+{% block content %}
+{% if messages %}
+    <ul class="messages">
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{message.tags}}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ feedback_form.as_p }}
+            <div>
+                <div class="form-control" colspan='2'>
+                    <input class="btn btn-primary" type="submit" value="Leave feedback" />
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+

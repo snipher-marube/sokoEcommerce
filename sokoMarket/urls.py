@@ -27,6 +27,7 @@ urlpatterns = [
     path('orders/', include('orders.urls')), # new
     path('appointment/', include('appointment.urls')), # new
     path('supplier/', include('supplier.urls')), # new
+    path('feedback/', include('feedback.urls')), # new
    
 ]
 if settings.DEBUG:

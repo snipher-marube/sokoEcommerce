@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'axes',
     'appointment.apps.AppointmentConfig', # new
     'supplier.apps.SupplierConfig', # new
+    'feedback',
     
    
    
@@ -71,6 +72,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'category.context_processors.menu_links', # new
                 'carts.context_processors.counter', # new
+                'feedback.context_processors.feedback_form', #new
             ],
         },
     },
@@ -176,6 +178,12 @@ MESSAGE_TAGS = {
     messages.SUCCESS: 'success',
     messages.INFO: 'info',
 }
+
+FEEDBACK_CHOICES = (
+        ('service_delivery', 'Service Delivery'),
+        ('product_delivery', 'Product Delivery'),
+)
+ALLOW_ANONYMOUS_FEEDBACK = True
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
